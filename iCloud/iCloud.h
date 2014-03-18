@@ -152,6 +152,30 @@ NS_CLASS_AVAILABLE_IOS(5_1) @interface iCloud : NSObject
  @param handler Code block called when the document is successfully saved. The completion block passes UIDocument and NSData objects containing the saved document and it's contents in the form of NSData. The NSError object contains any error information if an error occurred, otherwise it will be nil. */
 - (void)saveAndCloseDocumentWithName:(NSString *)documentName withContent:(NSData *)content completion:(void (^)(UIDocument *cloudDocument, NSData *documentData, NSError *error))handler __attribute__((nonnull));
 
+
+/** @name Uploading to iCloud */
+
+/** Create, save, and close a document in iCloud.
+
+ @discussion First, iCloud Document Sync checks if the specified document exists. If the document exists it is saved and closed. If the document does not exist, it is created then closed.
+
+ iCloud Document Sync uses UIDocument, NSData, and NSFileWrapper to store and manage files. All of the heavy lifting with NSData, NSFileWrapper, and UIDocument is handled for you. There's no need to actually create or manage any files, just give iCloud Document Sync your data, and the rest is done for you.
+
+ To create a new document or save an existing one (close the document), use this method. Below is a code example of how to use it.
+
+ [[iCloud sharedCloud] saveAndCloseDocumentWithName:@"Name.ext" withComplexContent:[NSDictionary dictionaryWithObjectsAndKeys:@"subfile1.tmp",[NSData alloc],nil] completion:^(UIDocument *cloudDocument, NSData *documentData, NSError *error) {
+ if (error == nil) {
+ // Code here to use the UIDocument or NSData objects which have been passed with the completion handler
+ }
+ }];
+
+ Documents can be created even if the user is not connected to the internet. The only case in which a document will not be created is when the user has disabled iCloud or if the current application is not setup for iCloud.
+
+ @param documentName The name of the document being written to iCloud. This value must not be nil.
+ @param complexContent The data to write to the document
+ @param handler Code block called when the document is successfully saved. The completion block passes UIDocument and NSData objects containing the saved document and it's contents in the form of NSData. The NSError object contains any error information if an error occurred, otherwise it will be nil. */
+- (void)saveAndCloseDocumentWithName:(NSString *)documentName withComplexContent:(NSDictionary *)complexContent completion:(void (^)(UIDocument *cloudDocument, NSDictionary *documentData, NSError *error))handler __attribute__((nonnull));
+
 /** Upload any local files that weren't created with iCloud
  
  @discussion Files in the local documents directory that do not already exist in iCloud will be **moved** into iCloud one by one. This process involves lots of file manipulation and as a result it may take a long time. This process will be performed on the background thread to avoid any lag or memory problems. When the upload processes end, the completion block is called on the main thread.
@@ -232,6 +256,26 @@ NS_CLASS_AVAILABLE_IOS(5_1) @interface iCloud : NSObject
  @param documentName The name of the document in iCloud. This value must not be nil.
  @param handler Code block called when the document is successfully retrieved (opened or downloaded). The completion block passes UIDocument and NSData objects containing the opened document and it's contents in the form of NSData. If there is an error, the NSError object will have an error message (may be nil if there is no error). This value must not be nil. */
 - (void)retrieveCloudDocumentWithName:(NSString *)documentName completion:(void (^)(UIDocument *cloudDocument, NSData *documentData, NSError *error))handler __attribute__((nonnull));
+
+
+
+
+/** @name Retrieving iCloud Complex Content and Info */
+
+/** Open a UIDocument stored in iCloud. If the document does not exist, a new blank document will be created using the documentName provided. You can use the doesFileExistInCloud: method to check if a file exists before calling this method.
+
+ @discussion This method will attempt to open the specified document. If the file does not exist, a blank one will be created. The completion handler is called when the file is opened or created (either successfully or not). The completion handler contains a UIDocument, NSData, and NSError all of which contain information about the opened document.
+
+ [[iCloud sharedCloud] retrieveComplexCloudDocumentWithName:@"docName.ext" completion:^(UIDocument *cloudDocument, NSDictionary *documentData, NSError *error) {
+ if (error == nil) {
+ NSString *documentName = [cloudDocument.fileURL lastPathComponent];
+ NSDictionary *fileData = documentData;
+ }
+ }];
+
+ @param documentName The name of the document in iCloud. This value must not be nil.
+ @param handler Code block called when the document is successfully retrieved (opened or downloaded). The completion block passes UIDocument and NSData objects containing the opened document and it's contents in the form of NSData. If there is an error, the NSError object will have an error message (may be nil if there is no error). This value must not be nil. */
+- (void)retrieveComplexCloudDocumentWithName:(NSString *)documentName completion:(void (^)(UIDocument *cloudDocument, NSDictionary *documentData, NSError *error))handler __attribute__((nonnull));
 
 /** Get the relevant iCloudDocument object for the specified file
  

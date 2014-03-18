@@ -57,8 +57,27 @@
 /** The file version of the UIDocument object, used for handling file conflicts */
 NSFileVersion *laterVersion(NSFileVersion *first, NSFileVersion *second);
 
-/** The data to read or write to a UIDocument */
-@property (strong) NSData *contents;
+/** Is this document simple or complex */
+typedef enum {
+    Simple,
+    Complex,
+    Undefined,
+} iCloudDocumentComplexity;
+
+/** This is a complex structured file: Bundle or other type */
+@property (readonly) iCloudDocumentComplexity complexity;
+
+/** The simple data to read or write to a UIDocument */
+@property (nonatomic, strong) NSData *contents;
+
+/** The complex data to read or write to a UIDocument */
+@property (nonatomic, strong, readonly) NSDictionary *complexContents;
+
+/** The complex data to read from a UIDocument */
+- (id<NSCoding>)getComplexContentsForKey:(NSString*)key;
+
+/** The complex data to write to a UIDocument */
+- (void)setComplexContents:(id<NSCoding>)object forKey:(NSString*)key;
 
 /** Retrieve the localized name of the current document
  
