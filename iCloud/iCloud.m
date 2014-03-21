@@ -904,7 +904,7 @@
 }
 
 
-- (void)retrieveComplexCloudDocumentWithName:(NSString *)documentName completion:(void (^)(UIDocument *cloudDocument, NSDictionary *documentData, NSError *error))handler {
+- (void)retrieveCloudComplexDocumentWithName:(NSString *)documentName completion:(void (^)(UIDocument *cloudDocument, NSDictionary *documentData, NSError *error))handler {
     // Log Retrieval
     if (self.verboseLogging == YES) NSLog(@"[iCloud] Retrieving iCloud document, %@", documentName);
 

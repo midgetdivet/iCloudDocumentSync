@@ -266,7 +266,7 @@ NS_CLASS_AVAILABLE_IOS(5_1) @interface iCloud : NSObject
 
  @discussion This method will attempt to open the specified document. If the file does not exist, a blank one will be created. The completion handler is called when the file is opened or created (either successfully or not). The completion handler contains a UIDocument, NSData, and NSError all of which contain information about the opened document.
 
- [[iCloud sharedCloud] retrieveComplexCloudDocumentWithName:@"docName.ext" completion:^(UIDocument *cloudDocument, NSDictionary *documentData, NSError *error) {
+ [[iCloud sharedCloud] retrieveCloudComplexDocumentWithName:@"docName.ext" completion:^(UIDocument *cloudDocument, NSDictionary *documentData, NSError *error) {
  if (error == nil) {
  NSString *documentName = [cloudDocument.fileURL lastPathComponent];
  NSDictionary *fileData = documentData;
@@ -275,7 +275,7 @@ NS_CLASS_AVAILABLE_IOS(5_1) @interface iCloud : NSObject
 
  @param documentName The name of the document in iCloud. This value must not be nil.
  @param handler Code block called when the document is successfully retrieved (opened or downloaded). The completion block passes UIDocument and NSData objects containing the opened document and it's contents in the form of NSData. If there is an error, the NSError object will have an error message (may be nil if there is no error). This value must not be nil. */
-- (void)retrieveComplexCloudDocumentWithName:(NSString *)documentName completion:(void (^)(UIDocument *cloudDocument, NSDictionary *documentData, NSError *error))handler __attribute__((nonnull));
+- (void)retrieveCloudComplexDocumentWithName:(NSString *)documentName completion:(void (^)(UIDocument *cloudDocument, NSDictionary *documentData, NSError *error))handler __attribute__((nonnull));
 
 /** Get the relevant iCloudDocument object for the specified file
  
